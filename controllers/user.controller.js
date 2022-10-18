@@ -1,7 +1,7 @@
 const { request, response } = require('express')
 
 const getUsers = (req = request, res = response) => {
-  // url/api/users/?name=Sergio&date=2022-10-31 -> query
+  // url/api/users/?name=Anderson&date=2022-10-31 -> query
 
   const { name, date } = req.query
 
@@ -13,7 +13,7 @@ const getUsers = (req = request, res = response) => {
 }
 
 const getUsersById = (req = request, res = response) => {
-  // url/api/users/14 -> Segmento: El 14 entra en el id
+  // url/api/users/14 -> Segmento: El 13 entra en el id
 
   const id = req.params.id
   res.json({
