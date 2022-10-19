@@ -1,4 +1,5 @@
 const { request, response } = require('express')
+const User = require('../models/user')
 
 const getUsers = (req = request, res = response) => {
   // url/api/users/?name=Anderson&date=2022-10-31 -> query
@@ -22,14 +23,16 @@ const getUsersById = (req = request, res = response) => {
   })
 }
 
-const createUser = (req, res) => {
+const createUser = async (req, res) => {
   // url/api/users/-> Body: Es el objeto en JSON
 
-  const { name, lastname, age } = req.body
+  const body = req.body
+  const user = new User(body)
+  await user.save()
 
   res.status(201).json({
     msg: 'post API - Controller',
-    name,
+    user,
   })
 }
 
