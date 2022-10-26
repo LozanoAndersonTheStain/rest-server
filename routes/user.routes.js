@@ -15,6 +15,7 @@ const {
   deleteUser,
   getUsersById,
 } = require('../controllers/user.controller')
+const validateJWT = require('../middlewares/validate-jwt')
 
 const router = Router()
 
@@ -57,6 +58,7 @@ router.put(
 router.delete(
   '/:id',
   [
+    validateJWT,
     check('id', 'El id no es valido').isMongoId(),
     check('id').custom(userByIdExists),
     validateFileds,
