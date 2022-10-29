@@ -1,8 +1,7 @@
 const { Router } = require('express')
 const { check } = require('express-validator')
-const { login } = require('../controllers/auth.constroller')
+const { login } = require('../controllers/auth.controller')
 
-const { emailExists } = require('../helpers/db-validator')
 const { validateFileds } = require('../middlewares/validate-fields')
 
 const router = Router()
@@ -12,7 +11,7 @@ router.post(
   [
     check('email', 'El email es requerido').not().isEmpty(),
     check('password', 'El password es requerido').not().isEmpty(),
-    
+
     validateFileds,
   ],
 
