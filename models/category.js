@@ -24,6 +24,7 @@ CategorySchema.methods.toJSON = function () {
 
   const { _id: u_id, password, __v: u__v, ...user } = category.user
   user.id = u_id
+  category.user = user
 
   return category
 }

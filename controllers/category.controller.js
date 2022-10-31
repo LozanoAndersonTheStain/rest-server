@@ -28,6 +28,22 @@ const getCategories = async (req = request, res = response) => {
   }
 }
 
+const getCategoryById = async (req = request, res = response) => {
+  try {
+    const { id } = req.params
+    const category = await Category.findById(id).populate('user')
+
+    res.status(200).json({
+      category,
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      msg: 'Error en el servidor',
+    })
+  }
+}
+
 const createCategory = async (req = request, res = response) => {
   // URL/api/user/ -- Body: activar raw y Json
   //Es el objeto en JSON
@@ -51,11 +67,9 @@ const createCategory = async (req = request, res = response) => {
     const category = new Category(data)
 
     //Verificar si el correo ya existe en la BD
-
     await category.save()
 
     res.status(201).json({
-      msg: 'create API - controller',
       category,
     })
   } catch (error) {
@@ -66,4 +80,64 @@ const createCategory = async (req = request, res = response) => {
   }
 }
 
-module.exports = { getCategories, createCategory }
+const updateCategory = async (req = request, res = response) => {
+  try {
+    const { id } = req.params
+    const { state, user, ...data } = req.body
+    data.name = data.name.trim().toUpperCase()
+    data.user = req.authenticatedUser.id
+
+    const categoryDB = await Category.findOne({ name: data.name })
+    if (categoryDB) {
+      return res.status(400).json({
+        msg: `La categoría ${categoryDB.name} ya existe`,
+      })
+    }
+
+    const category = await Category.findByIdAndUpdate(id, data, {
+      new: true,
+    })
+
+    res.status(200).json({
+      category,
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      msg: 'Error en el servidor',
+    })
+  }
+}
+
+const deleteCategory = async (req = request, res = response) => {
+  try {
+    const { id } = req.params
+
+    const deletedCategory = await Category.findByIdAndUpdate(
+      id,
+      {
+        status: false,
+      },
+      {
+        new: true,
+      }
+    )
+
+    res.status(200).json({
+      deletedCategory,
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      msg: 'Error en el servidor',
+    })
+  }
+}
+
+module.exports = {
+  getCategories,
+  createCategory,
+  getCategoryById,
+  updateCategory,
+  deleteCategory,
+}
